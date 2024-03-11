@@ -1,6 +1,9 @@
 package controller;
 
-import database.MySQLConnection;
+import database.DatabaseManager;
+
+import java.util.List;
+import java.util.Map;
 
 public class GatewayController {
 
@@ -8,7 +11,13 @@ public class GatewayController {
     }
 
     public void execute() {
-        MySQLConnection mySQLConnection = new MySQLConnection();
-        mySQLConnection.connect();
+        DatabaseManager databaseManager = new DatabaseManager();
+        databaseManager.connect();
+        List<Map<String, Object>> articles = databaseManager.select();
+        databaseManager.disconnect();
+
+
+
+
     }
 }
