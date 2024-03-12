@@ -21,7 +21,6 @@ public class FilterService {
 
     public List<Map<String, Object>> filter(List<Map<String, Object>> data) {
         List<Map<String, Object>> filteredData = new ArrayList<>(data);
-
         columnAppendFilter.filter(filteredData);
         columnSplitFilter.filter(filteredData);
         dateFormatFilter.filter(filteredData);

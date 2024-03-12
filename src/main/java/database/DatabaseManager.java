@@ -52,8 +52,8 @@ public class DatabaseManager implements AutoCloseable {
         final String query = "SELECT * FROM news_article";
 
         try {
-            List<Map<String, Object>> articles = runner.query(connection, query, new MapListHandler());
-            return Collections.unmodifiableList(articles);
+            List<Map<String, Object>> data = runner.query(connection, query, new MapListHandler());
+            return Collections.unmodifiableList(data);
         } catch (SQLException e) {
             e.printStackTrace();
         }
