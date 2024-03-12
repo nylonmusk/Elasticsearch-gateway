@@ -1,14 +1,22 @@
 package filter;
 
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
-public class TrimFilter implements Filter {
+public class TrimFilter implements FilterInterface {
 
     @Override
-    public Map<String, Object> filter(Map<String, Object> data) {
-        for (String key : data.keySet()) {
-            data.put(key, data.get(key).toString().trim());
+    public void filter(List<Map<String, Object>> data) {
+        for (Map<String, Object> item : data) {
+            Iterator<Map.Entry<String, Object>> iterator = item.entrySet().iterator();
+            while (iterator.hasNext()) {
+                Map.Entry<String, Object> entry = iterator.next();
+                if (entry.getValue() instanceof String) {
+                    String value = (String) entry.getValue();
+                    entry.setValue(value.trim());
+                }
+            }
         }
-        return data;
     }
 }
