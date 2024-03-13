@@ -9,23 +9,21 @@ import java.util.Map;
 
 public class GatewayController {
 
-    public GatewayController() {
+    private final DatabaseManager databaseManager;
+    private final FilterService filterService;
+    private final Dump dump;
+
+    public GatewayController(DatabaseManager databaseManager, FilterService filterService, Dump dump) {
+        this.databaseManager = databaseManager;
+        this.filterService = filterService;
+        this.dump = dump;
     }
 
     public void execute() {
-        DatabaseManager databaseManager = new DatabaseManager();
         databaseManager.connect();
         List<Map<String, Object>> data = databaseManager.select();
         databaseManager.disconnect();
-        FilterService filterService = new FilterService();
-        System.out.println(data.get(1).toString());
-        System.out.println("-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
         filterService.filter(data);
-        System.out.println(data.get(1).toString());
-
-
-        Dump dump = new Dump();
         dump.makeJson(data);
-
     }
 }

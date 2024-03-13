@@ -12,12 +12,24 @@ import java.util.List;
 import java.util.Map;
 
 public class FilterService {
-    private final ColumnAppendFilter columnAppendFilter = new ColumnAppendFilter();
-    private final ColumnSplitFilter columnSplitFilter = new ColumnSplitFilter();
-    private final DateFormatFilter dateFormatFilter = new DateFormatFilter();
-    private final RemoveHtmlTagFilter removeHtmlTagFilter = new RemoveHtmlTagFilter();
-    private final ToLowerCaseFilter toLowerCaseFilter = new ToLowerCaseFilter();
-    private final TrimFilter trimFilter = new TrimFilter();
+    private final ColumnAppendFilter columnAppendFilter;
+    private final ColumnSplitFilter columnSplitFilter;
+    private final DateFormatFilter dateFormatFilter;
+    private final RemoveHtmlTagFilter removeHtmlTagFilter;
+    private final ToLowerCaseFilter toLowerCaseFilter;
+    private final TrimFilter trimFilter;
+
+    public FilterService(ColumnAppendFilter columnAppendFilter, ColumnSplitFilter columnSplitFilter,
+                         DateFormatFilter dateFormatFilter, RemoveHtmlTagFilter removeHtmlTagFilter,
+                         ToLowerCaseFilter toLowerCaseFilter, TrimFilter trimFilter) {
+        this.columnAppendFilter = columnAppendFilter;
+        this.columnSplitFilter = columnSplitFilter;
+        this.dateFormatFilter = dateFormatFilter;
+        this.removeHtmlTagFilter = removeHtmlTagFilter;
+        this.toLowerCaseFilter = toLowerCaseFilter;
+        this.trimFilter = trimFilter;
+    }
+
 
     public List<Map<String, Object>> filter(List<Map<String, Object>> data) {
         List<Map<String, Object>> filteredData = new ArrayList<>(data);
