@@ -3,8 +3,10 @@ import controller.GatewayController;
 import database.DatabaseManager;
 import dump.Dump;
 
+import filter.FilterFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import service.ConfigService;
 import service.FilterService;
 
 import java.io.IOException;
@@ -24,6 +26,8 @@ public class Main {
                 .databaseManager(new DatabaseManager())
                 .filterService(new FilterService())
                 .dump(new Dump())
+                .configService(new ConfigService())
+                .filterFactory(new FilterFactory())
                 .build();
     }
 }
