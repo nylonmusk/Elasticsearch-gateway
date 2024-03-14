@@ -3,7 +3,7 @@ package filter;
 import java.util.List;
 import java.util.Map;
 
-public class ToLowerCaseFilter implements FilterInterface {
+public class ConvertCaseFilter implements FilterInterface {
 
     @Override
     public void filter(List<Map<String, Object>> data) {
