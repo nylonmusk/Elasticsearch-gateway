@@ -2,8 +2,8 @@ package dump;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.json.JSONArray;
-import org.json.JSONObject;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.FileWriter;
 import java.util.List;
@@ -11,6 +11,7 @@ import java.util.Map;
 
 public class Dump {
     private static final ObjectMapper objectMapper = new ObjectMapper();
+    private final Logger logger = LogManager.getLogger(Dump.class);
 
     static {
         // Jackson JSR310 모듈 등록
@@ -28,7 +29,7 @@ public class Dump {
                 fileWriter.write(jsonData);
                 fileWriter.flush();
             }
-            System.out.println("JSON data successfully written to output.json");
+            logger.info("JSON 파일 생성");
         } catch (Exception e) {
             e.printStackTrace();
         }
