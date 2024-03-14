@@ -1,44 +1,23 @@
 package service;
 
-import filter.ColumnAppendFilter;
-import filter.ColumnSplitFilter;
-import filter.DateFormatFilter;
-import filter.RemoveHtmlTagFilter;
-import filter.ToLowerCaseFilter;
-import filter.TrimFilter;
+import filter.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class FilterService {
-    private final ColumnAppendFilter columnAppendFilter;
-    private final ColumnSplitFilter columnSplitFilter;
-    private final DateFormatFilter dateFormatFilter;
-    private final RemoveHtmlTagFilter removeHtmlTagFilter;
-    private final ToLowerCaseFilter toLowerCaseFilter;
-    private final TrimFilter trimFilter;
+    private final Logger logger = LogManager.getLogger(FilterService.class);
 
-    public FilterService(ColumnAppendFilter columnAppendFilter, ColumnSplitFilter columnSplitFilter,
-                         DateFormatFilter dateFormatFilter, RemoveHtmlTagFilter removeHtmlTagFilter,
-                         ToLowerCaseFilter toLowerCaseFilter, TrimFilter trimFilter) {
-        this.columnAppendFilter = columnAppendFilter;
-        this.columnSplitFilter = columnSplitFilter;
-        this.dateFormatFilter = dateFormatFilter;
-        this.removeHtmlTagFilter = removeHtmlTagFilter;
-        this.toLowerCaseFilter = toLowerCaseFilter;
-        this.trimFilter = trimFilter;
+    public FilterService() {
     }
 
-
-    public List<Map<String, Object>> filter(List<Map<String, Object>> data) {
-        List<Map<String, Object>> filteredData = new ArrayList<>(data);
-        columnAppendFilter.filter(filteredData);
-        columnSplitFilter.filter(filteredData);
-        dateFormatFilter.filter(filteredData);
-        removeHtmlTagFilter.filter(filteredData);
-        toLowerCaseFilter.filter(filteredData);
-        trimFilter.filter(filteredData);
-        return filteredData;
+    public List<Map<String, Object>> filter(List<Map<String, Object>> selectedData, List<FilterInterface> filters) {
+        for (FilterInterface filter : filters) {
+            filter.filter(selectedData);
+        }
+        logger.info("filter 성공.");
+        return selectedData;
     }
 }
