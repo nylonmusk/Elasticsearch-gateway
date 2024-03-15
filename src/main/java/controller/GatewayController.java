@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class GatewayController {
-
+    private final String PathOfJsonFile = "C:\\Users\\mayfarm\\Documents\\config.json";
     private final DatabaseManager databaseManager;
     private final FilterService filterService;
     private final Dump dump;
@@ -33,7 +33,7 @@ public class GatewayController {
     }
 
     public void execute() throws IOException {
-        Map<String, Map<String, Object>> jsonData = configService.loadJsonFromFile("C:\\Users\\mayfarm\\Documents\\config.json");
+        Map<String, Map<String, Object>> jsonData = configService.loadJsonFromFile(PathOfJsonFile);
 
         databaseManager.connect(jsonData.get(Keyword.DATABASE.get()));
         List<Map<String, Object>> selectedData = databaseManager.select(jsonData.get(Keyword.FETCH.get()));
