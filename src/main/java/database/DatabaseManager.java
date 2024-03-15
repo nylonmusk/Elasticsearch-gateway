@@ -7,43 +7,50 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 public class DatabaseManager implements AutoCloseable {
-
     private final Logger logger = LogManager.getLogger(DatabaseManager.class);
     private Connection connection;
+    private static final URLClassLoader CLASS_LOADER = (URLClassLoader) ClassLoader.getSystemClassLoader();
+    private static final List<URL> LOADED_URL_LIST = new ArrayList<>();
+    private static final List<String> LOADED_CLASS_LIST = new ArrayList<>();
 
     public void connect(Map<String, Object> databaseData) {
         try {
-            String libPath = databaseData.get("libPath").toString().replaceAll("\\\\", "/");
-            String lib = databaseData.get("lib").toString();
+            String libPath = databaseData.get(Database.LIB_PATH.get()).toString();
+            String lib = databaseData.get(Database.LIB.get()).toString();
+            String driver = databaseData.get(Database.DRIVER.get()).toString();
+
             if (!libPath.endsWith("/")) libPath += "/";
 
             File libFile = new File(libPath, lib);
+            URL classUrl = libFile.toURI().toURL();
+            Method method = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
+            method.setAccessible(true);
 
-            // URLClassLoader를 생성하여 MySQL JDBC 드라이버를 클래스패스에 추가
-//            URL classURL = new URL("jar:" + libFile.toURI().toURL() + "!/");
-//            logger.info(classURL);
-//            URLClassLoader classLoader = new URLClassLoader(new URL[]{classURL});
-            URLClassLoader classLoader = new URLClassLoader(new URL[]{libFile.toURI().toURL()});
+            if (!LOADED_URL_LIST.contains(classUrl)) {
+                method.invoke(CLASS_LOADER, classUrl);
+                LOADED_URL_LIST.add(classUrl);
+            }
+            if (!LOADED_CLASS_LIST.contains(driver)) {
+                Class.forName(driver);
+                LOADED_CLASS_LIST.add(driver);
+            }
 
-            // MySQL JDBC 드라이버 클래스를 로드
-            Class.forName("com.mysql.cj.jdbc.Driver", true, classLoader);
+            String url = databaseData.get(Database.URL.get()).toString();
+            String user = databaseData.get(Database.USER_NAME.get()).toString();
+            String password = databaseData.get(Database.PASSWORD.get()).toString();
 
-            // 나머지 연결 설정
-            String url = (String) databaseData.get("url");
-            String user = (String) databaseData.get("username");
-            String password = (String) databaseData.get("password");
-
-            // DriverManager를 통해 연결
             connection = DriverManager.getConnection(url, user, password);
             logger.info("연결 성공.");
 
@@ -51,18 +58,6 @@ public class DatabaseManager implements AutoCloseable {
             logger.error("연결 실패: " + e.getMessage());
         }
     }
-//    public void connect(Map<String, Object> databaseData) {
-//        try {
-//
-//            String jdbcUrl = databaseData.get(Database.URL.get()).toString();
-//            String username = databaseData.get(Database.USER_NAME.get()).toString();
-//            String password = databaseData.get(Database.PASSWORD.get()).toString();
-//            connection = DriverManager.getConnection(jdbcUrl, username, password);
-//            logger.info("연결 성공.");
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//    }
 
     public void disconnect() {
         try {
