@@ -10,8 +10,7 @@ import java.util.Map;
 public class FilterService {
     private final Logger logger = LogManager.getLogger(FilterService.class);
 
-    public FilterService() {
-    }
+    public FilterService() {}
 
     public List<Map<String, Object>> filter(List<Map<String, Object>> selectedData, List<FilterInterface> filters) {
         for (FilterInterface filter : filters) {

@@ -6,6 +6,9 @@ import org.apache.commons.dbutils.handlers.MapListHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.File;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -20,16 +23,46 @@ public class DatabaseManager implements AutoCloseable {
 
     public void connect(Map<String, Object> databaseData) {
         try {
+            String libPath = databaseData.get("libPath").toString().replaceAll("\\\\", "/");
+            String lib = databaseData.get("lib").toString();
+            if (!libPath.endsWith("/")) libPath += "/";
 
-            String jdbcUrl = databaseData.get(Database.URL.get()).toString();
-            String username = databaseData.get(Database.USER_NAME.get()).toString();
-            String password = databaseData.get(Database.PASSWORD.get()).toString();
-            connection = DriverManager.getConnection(jdbcUrl, username, password);
+            File libFile = new File(libPath, lib);
+
+            // URLClassLoader를 생성하여 MySQL JDBC 드라이버를 클래스패스에 추가
+//            URL classURL = new URL("jar:" + libFile.toURI().toURL() + "!/");
+//            logger.info(classURL);
+//            URLClassLoader classLoader = new URLClassLoader(new URL[]{classURL});
+            URLClassLoader classLoader = new URLClassLoader(new URL[]{libFile.toURI().toURL()});
+
+            // MySQL JDBC 드라이버 클래스를 로드
+            Class.forName("com.mysql.cj.jdbc.Driver", true, classLoader);
+
+            // 나머지 연결 설정
+            String url = (String) databaseData.get("url");
+            String user = (String) databaseData.get("username");
+            String password = (String) databaseData.get("password");
+
+            // DriverManager를 통해 연결
+            connection = DriverManager.getConnection(url, user, password);
             logger.info("연결 성공.");
-        } catch (SQLException e) {
-            e.printStackTrace();
+
+        } catch (Exception e) {
+            logger.error("연결 실패: " + e.getMessage());
         }
     }
+//    public void connect(Map<String, Object> databaseData) {
+//        try {
+//
+//            String jdbcUrl = databaseData.get(Database.URL.get()).toString();
+//            String username = databaseData.get(Database.USER_NAME.get()).toString();
+//            String password = databaseData.get(Database.PASSWORD.get()).toString();
+//            connection = DriverManager.getConnection(jdbcUrl, username, password);
+//            logger.info("연결 성공.");
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     public void disconnect() {
         try {
@@ -49,7 +82,7 @@ public class DatabaseManager implements AutoCloseable {
 
     public List<Map<String, Object>> select(Map<String, Object> fetchData) {
         if (connection == null) {
-            System.out.println("연결이 없습니다. connect 메소드를 호출하여 먼저 연결하세요.");
+            logger.warn("연결이 없습니다.");
             return Collections.emptyList();
         }
 
