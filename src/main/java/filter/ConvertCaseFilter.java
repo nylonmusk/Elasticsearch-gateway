@@ -1,5 +1,7 @@
 package filter;
 
+import view.Log;
+
 import java.util.List;
 import java.util.Map;
 
@@ -12,5 +14,6 @@ public class ConvertCaseFilter implements FilterInterface {
                 entry.setValue(entry.getValue().toString().toLowerCase());
             }
         }
+        Log.info(ConvertCaseFilter.class.getName(), "Converted Case successfully.");
     }
 }

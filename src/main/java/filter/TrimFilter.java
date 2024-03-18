@@ -1,8 +1,6 @@
 package filter;
 
-import controller.GatewayController;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import view.Log;
 
 import java.util.Iterator;
 import java.util.List;
@@ -22,5 +20,6 @@ public class TrimFilter implements FilterInterface {
                 }
             }
         }
+        Log.info(TrimFilter.class.getName(), "trimmed successfully.");
     }
 }

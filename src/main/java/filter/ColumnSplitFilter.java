@@ -1,5 +1,7 @@
 package filter;
 
+import view.Log;
+
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -23,5 +25,6 @@ public class ColumnSplitFilter implements FilterInterface {
                 item.put(key2, value2);
             }
         }
+        Log.info(ColumnSplitFilter.class.getName(), "Column split successfully.");
     }
 }

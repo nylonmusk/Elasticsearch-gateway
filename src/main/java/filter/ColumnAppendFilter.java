@@ -1,5 +1,7 @@
 package filter;
 
+import view.Log;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -23,5 +25,6 @@ public class ColumnAppendFilter implements FilterInterface {
                 item.put(targetKey, appendedValue);
             }
         }
+        Log.info(ColumnAppendFilter.class.getName(), "Column appended successfully.");
     }
 }

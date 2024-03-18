@@ -3,16 +3,13 @@ package service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import constant.Keyword;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import view.Log;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
 public class ConfigService {
-    private static final Logger logger = LogManager.getLogger(ConfigService.class);
-
     private final String filePath;
     private final Map<String, Map<String, Object>> configData;
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -26,7 +23,8 @@ public class ConfigService {
         Map<String, Map<String, Object>> result;
         result = objectMapper.readValue(new File(filePath), new TypeReference<Map<String, Map<String, Object>>>() {
         });
-        logger.info("Config 파일 읽기 성공.");
+        Log.info(ConfigService.class.getName(), "read Config File.");
+
         return result;
     }
 

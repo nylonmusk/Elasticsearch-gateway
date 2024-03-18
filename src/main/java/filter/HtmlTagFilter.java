@@ -1,6 +1,7 @@
 package filter;
 
 import constant.HtmlTagRegex;
+import view.Log;
 
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,7 @@ public class HtmlTagFilter implements FilterInterface {
                 entry.setValue(filteredValue);
             }
         }
+        Log.info(HtmlTagFilter.class.getName(), "HtmlTag removed successfully.");
     }
 }
 

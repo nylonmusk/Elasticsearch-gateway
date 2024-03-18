@@ -1,5 +1,7 @@
 package filter;
 
+import view.Log;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -19,20 +21,21 @@ public class DateFormatFilter implements FilterInterface {
 
     @Override
     public void filter(List<Map<String, Object>> data, Map<String, Object> config) {
-        try {
-            List<String> columns = (List<String>) config.get("column");
-            for (Map<String, Object> item : data) {
-                for (String columnName : columns) {
-                    if (item.containsKey(columnName)) {
-                        String columnValue = (String) item.get(columnName);
-                        Date date = inputFormat.parse(columnValue);
-                        String iso8601Date = outputFormat.format(date);
-                        item.put(columnName, iso8601Date);
+            try {
+                List<String> columns = (List<String>) config.get("column");
+                for (Map<String, Object> item : data) {
+                    for (String columnName : columns) {
+                        if (item.containsKey(columnName)) {
+                            String columnValue = (String) item.get(columnName);
+                            Date date = inputFormat.parse(columnValue);
+                            String iso8601Date = outputFormat.format(date);
+                            item.put(columnName, iso8601Date);
+                        }
                     }
                 }
+                Log.info(DateFormatFilter.class.getName(), "Date Formatted successfully.");
+            } catch (ParseException e) {
+                e.printStackTrace();
             }
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
     }
 }

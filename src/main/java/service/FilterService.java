@@ -5,15 +5,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import constant.Filter;
 import filter.FilterFactory;
 import filter.FilterInterface;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import view.Log;
 
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.*;
 
 public class FilterService {
-    private final Logger logger = LogManager.getLogger(FilterService.class);
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final FilterFactory filterFactory;
 
@@ -28,7 +26,7 @@ public class FilterService {
             Map<String, Object> specificFilterConfig = getSpecificFilterConfig(filterConfig, filter);
             filter.filter(selectedData, specificFilterConfig);
         }
-        logger.info("filter 성공.");
+        Log.info(FilterService.class.getName(), "filtered successfully.");
         return selectedData;
     }
 

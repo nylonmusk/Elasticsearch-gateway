@@ -4,19 +4,16 @@ import database.DatabaseManager;
 import dump.Dump;
 
 import filter.FilterFactory;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import service.ConfigService;
 import service.FilterService;
+import view.Log;
 
 import java.io.IOException;
 import java.text.ParseException;
 
 public class Main {
-    private static final Logger logger = LogManager.getLogger(Main.class);
-
     public static void main(String[] args) throws IOException, ParseException {
-        logger.info("실행");
+        Log.info(Main.class.getName(), "execute.");
 
         GatewayController gatewayController = createGatewayController();
         gatewayController.execute();

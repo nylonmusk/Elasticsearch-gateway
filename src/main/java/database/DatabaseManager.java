@@ -3,8 +3,7 @@ package database;
 import constant.Database;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.MapListHandler;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import view.Log;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -19,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 
 public class DatabaseManager implements AutoCloseable {
-    private final Logger logger = LogManager.getLogger(DatabaseManager.class);
     private Connection connection;
     private static final URLClassLoader CLASS_LOADER = (URLClassLoader) ClassLoader.getSystemClassLoader();
     private static final List<URL> LOADED_URL_LIST = new ArrayList<>();
@@ -32,7 +30,7 @@ public class DatabaseManager implements AutoCloseable {
         return selectedData;
     }
 
-    public void connect(Map<String, Object> databaseData) {
+    private void connect(Map<String, Object> databaseData) {
         try {
             String libPath = databaseData.get(Database.LIB_PATH.get()).toString();
             String lib = databaseData.get(Database.LIB.get()).toString();
@@ -57,21 +55,21 @@ public class DatabaseManager implements AutoCloseable {
             String password = databaseData.get(Database.PASSWORD.get()).toString();
 
             connection = DriverManager.getConnection(url, user, password);
-            logger.info("연결 성공.");
+            Log.info(DatabaseManager.class.getName(), "Database connected successfully.");
 
         } catch (Exception e) {
-            logger.error("연결 실패: " + e.getMessage());
+            Log.error(DatabaseManager.class.getName(), "Database connect failed.");
         }
     }
 
-    public void disconnect() {
+    private void disconnect() {
         try {
             if (connection != null && !connection.isClosed()) {
                 connection.close();
-                logger.info("연결 종료.");
+                Log.info(DatabaseManager.class.getName(), "Database disconnected successfully.");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.info(DatabaseManager.class.getName(), "Database disconnect failed.");
         }
     }
 
@@ -80,9 +78,9 @@ public class DatabaseManager implements AutoCloseable {
         disconnect();
     }
 
-    public List<Map<String, Object>> select(Map<String, Object> fetchData) {
+    private List<Map<String, Object>> select(Map<String, Object> fetchData) {
         if (connection == null) {
-            logger.warn("연결이 없습니다.");
+            Log.warn(DatabaseManager.class.getName(), "No Connection");
             return Collections.emptyList();
         }
 
@@ -91,7 +89,7 @@ public class DatabaseManager implements AutoCloseable {
         if (fetchSettingData != null) {
             String query = fetchSettingData.get(Database.QUERY.get()).toString();
             if (query != null && !query.isEmpty()) {
-                logger.info("query 설정 성공.");
+                Log.info(DatabaseManager.class.getName(), "Query set successfully.");
                 try {
                     List<Map<String, Object>> data = runner.query(connection, query, new MapListHandler());
                     return Collections.unmodifiableList(data);

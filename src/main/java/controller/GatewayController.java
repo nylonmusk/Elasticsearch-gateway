@@ -2,8 +2,6 @@ package controller;
 
 import database.DatabaseManager;
 import dump.Dump;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import service.ConfigService;
 import service.FilterService;
 
@@ -19,7 +17,6 @@ public class GatewayController {
     private final FilterService filterService;
     private final Dump dump;
     private final ConfigService configService;
-    private static final Logger logger = LogManager.getLogger(GatewayController.class);
 
     public GatewayController(DatabaseManager databaseManager, FilterService filterService, Dump dump, ConfigService configService) {
         this.databaseManager = databaseManager;
@@ -35,9 +32,7 @@ public class GatewayController {
     }
 
     private void getFetchedData() {
-        databaseManager.connect(configService.getDatabaseConfig());
-        fetchedData = databaseManager.select(configService.getFetchConfig());
-        databaseManager.disconnect();
+        fetchedData = databaseManager.execute(configService.getDatabaseConfig(), configService.getFetchConfig());
     }
 
     private void doFilter() throws IOException, ParseException {
