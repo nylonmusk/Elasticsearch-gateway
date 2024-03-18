@@ -1,13 +1,17 @@
 package filter;
 
 import constant.Filter;
+import constant.FilterOrder;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Set;
+
 
 public class FilterFactory {
 
     public List<FilterInterface> createFilters(Set<String> filterKeywords) {
-
         List<FilterInterface> filters = new ArrayList<>();
 
         for (String keyword : filterKeywords) {
@@ -27,9 +31,20 @@ public class FilterFactory {
                 filters.add(new DateFormatFilter());
             }
             if (keyword.equals(Filter.HTML_TAG.get())) {
-                filters.add(new RemoveHtmlTagFilter());
+                filters.add(new HtmlTagFilter());
             }
+
         }
+        filters.sort(Comparator.comparingInt(filter -> {
+            for (FilterOrder order : FilterOrder.values()) {
+                if (order.name().equals(filter.getClass().getSimpleName())) {
+                    return order.getOrder();
+                }
+            }
+            return FilterOrder.FIRST.getOrder();
+        }));
+
+
         return filters;
     }
 }

@@ -25,13 +25,18 @@ public class DatabaseManager implements AutoCloseable {
     private static final List<URL> LOADED_URL_LIST = new ArrayList<>();
     private static final List<String> LOADED_CLASS_LIST = new ArrayList<>();
 
+    public List<Map<String, Object>> execute(Map<String, Object> databaseData, Map<String, Object> fetchData) {
+        connect(databaseData);
+        List<Map<String, Object>> selectedData = select(fetchData);
+        disconnect();
+        return selectedData;
+    }
+
     public void connect(Map<String, Object> databaseData) {
         try {
             String libPath = databaseData.get(Database.LIB_PATH.get()).toString();
             String lib = databaseData.get(Database.LIB.get()).toString();
             String driver = databaseData.get(Database.DRIVER.get()).toString();
-
-            if (!libPath.endsWith("/")) libPath += "/";
 
             File libFile = new File(libPath, lib);
             URL classUrl = libFile.toURI().toURL();
@@ -71,7 +76,7 @@ public class DatabaseManager implements AutoCloseable {
     }
 
     @Override
-    public void close() throws Exception {
+    public void close() {
         disconnect();
     }
 

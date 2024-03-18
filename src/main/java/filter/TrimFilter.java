@@ -1,5 +1,9 @@
 package filter;
 
+import controller.GatewayController;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -7,7 +11,7 @@ import java.util.Map;
 public class TrimFilter implements FilterInterface {
 
     @Override
-    public void filter(List<Map<String, Object>> data) {
+    public void filter(List<Map<String, Object>> data, Map<String, Object> config) {
         for (Map<String, Object> item : data) {
             Iterator<Map.Entry<String, Object>> iterator = item.entrySet().iterator();
             while (iterator.hasNext()) {

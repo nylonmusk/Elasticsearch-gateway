@@ -2,28 +2,25 @@ package filter;
 
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 public class ColumnSplitFilter implements FilterInterface {
 
-    private final String sourceKey = "";
-    private final String targetKey1= "";
-    private final String targetKey2= "";
-    private final String separator= "";
-
     @Override
-    public void filter(List<Map<String, Object>> data) {
+    public void filter(List<Map<String, Object>> data, Map<String, Object> config) {
+        final String target = config.get("target").toString();
+        final String key1 = config.get("key1").toString();
+        final String key2 = config.get("key2").toString();
+        final String separator = config.get("separator").toString();
+
         for (Map<String, Object> item : data) {
-            if (item.containsKey(sourceKey)) {
-                Object value = item.get(sourceKey);
+            if (item.containsKey(target)) {
+                StringTokenizer st = new StringTokenizer(item.get(target).toString(), separator);
+                String value1 = st.nextToken();
+                String value2 = st.nextToken();
 
-                if (value instanceof String) {
-                    String[] splitValues = ((String) value).split(separator, 2);
-
-                    if (splitValues.length == 2) {
-                        item.put(targetKey1, splitValues[0]);
-                        item.put(targetKey2, splitValues[1]);
-                    }
-                }
+                item.put(key1, value1);
+                item.put(key2, value2);
             }
         }
     }
