@@ -1,5 +1,6 @@
 package filter;
 
+import constant.FilterOrder;
 import view.Log;
 
 import java.util.List;
@@ -9,12 +10,24 @@ import java.util.StringTokenizer;
 public class ColumnSplitFilter implements FilterInterface {
 
     @Override
-    public void filter(List<Map<String, Object>> data, Map<String, Object> config) {
-        final String target = config.get("target").toString();
-        final String key1 = config.get("key1").toString();
-        final String key2 = config.get("key2").toString();
-        final String separator = config.get("separator").toString();
+    public FilterOrder getFilterOrder() {
+        return FilterOrder.COLUMN_SPLIT;
+    }
 
+    private final String target;
+    private final String key1;
+    private final String key2;
+    private final String separator;
+
+    public ColumnSplitFilter(String target, String key1, String key2, String separator) {
+        this.target = target;
+        this.key1 = key1;
+        this.key2 = key2;
+        this.separator = separator;
+    }
+
+    @Override
+    public void filter(List<Map<String, Object>> data, Map<String, Object> config) {
         for (Map<String, Object> item : data) {
             if (item.containsKey(target)) {
                 StringTokenizer st = new StringTokenizer(item.get(target).toString(), separator);

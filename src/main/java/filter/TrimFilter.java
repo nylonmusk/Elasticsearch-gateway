@@ -1,5 +1,6 @@
 package filter;
 
+import constant.FilterOrder;
 import view.Log;
 
 import java.util.Iterator;
@@ -9,15 +10,18 @@ import java.util.Map;
 public class TrimFilter implements FilterInterface {
 
     @Override
+    public FilterOrder getFilterOrder() {
+        return FilterOrder.TRIM;
+    }
+
+    @Override
     public void filter(List<Map<String, Object>> data, Map<String, Object> config) {
         for (Map<String, Object> item : data) {
             Iterator<Map.Entry<String, Object>> iterator = item.entrySet().iterator();
             while (iterator.hasNext()) {
                 Map.Entry<String, Object> entry = iterator.next();
-                if (entry.getValue() instanceof String) {
-                    String value = (String) entry.getValue();
-                    entry.setValue(value.trim());
-                }
+                String value = entry.getValue().toString();
+                entry.setValue(value.trim());
             }
         }
         Log.info(TrimFilter.class.getName(), "trimmed successfully.");

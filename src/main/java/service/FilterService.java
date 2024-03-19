@@ -3,6 +3,7 @@ package service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import constant.Filter;
+import constant.Keyword;
 import filter.FilterFactory;
 import filter.FilterInterface;
 import view.Log;
@@ -20,7 +21,7 @@ public class FilterService {
     }
 
     public List<Map<String, Object>> filter(List<Map<String, Object>> selectedData, Map<String, Object> filterConfig) throws IOException, ParseException {
-        List<FilterInterface> filters = filterFactory.createFilters(filterConfig.keySet());
+        List<FilterInterface> filters = filterFactory.createFilters(filterConfig.keySet(), filterConfig);
 
         for (FilterInterface filter : filters) {
             Map<String, Object> specificFilterConfig = getSpecificFilterConfig(filterConfig, filter);
@@ -53,7 +54,7 @@ public class FilterService {
     private String getFilterName(String filterName) {
         String[] parts = filterName.split("@");
         String name = parts[0].substring(parts[0].lastIndexOf('.') + 1);
-        return name.toLowerCase().replace("filter", "");
+        return name.toLowerCase().replace(Keyword.FILTER.get(), "");
     }
 
     private Map<String, Object> parseSpecificFilterConfig(Object configValue) {

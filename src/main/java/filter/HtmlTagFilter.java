@@ -1,5 +1,6 @@
 package filter;
 
+import constant.FilterOrder;
 import constant.HtmlTagRegex;
 import view.Log;
 
@@ -7,6 +8,11 @@ import java.util.List;
 import java.util.Map;
 
 public class HtmlTagFilter implements FilterInterface {
+
+    @Override
+    public FilterOrder getFilterOrder() {
+        return FilterOrder.HTML_TAG;
+    }
 
     @Override
     public void filter(List<Map<String, Object>> data, Map<String, Object> config) {

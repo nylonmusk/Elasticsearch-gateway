@@ -1,5 +1,6 @@
 package filter;
 
+import constant.FilterOrder;
 import view.Log;
 
 import java.io.IOException;
@@ -9,12 +10,24 @@ import java.util.Map;
 public class ColumnAppendFilter implements FilterInterface {
 
     @Override
-    public void filter(List<Map<String, Object>> data, Map<String, Object> config) throws IOException {
-        final String key1 = config.get("key1").toString();
-        final String key2 = config.get("key2").toString();
-        final String targetKey = config.get("targetkey").toString();
-        final String attacher = config.get("attacher").toString();
+    public FilterOrder getFilterOrder() {
+        return FilterOrder.COLUMN_APPEND;
+    }
 
+    private final String key1;
+    private final String key2;
+    private final String targetKey;
+    private final String attacher;
+
+    public ColumnAppendFilter(String key1, String key2, String targetKey, String attacher) {
+        this.key1 = key1;
+        this.key2 = key2;
+        this.targetKey = targetKey;
+        this.attacher = attacher;
+    }
+
+    @Override
+    public void filter(List<Map<String, Object>> data, Map<String, Object> config) throws IOException {
         for (Map<String, Object> item : data) {
             if (item.containsKey(key1) && item.containsKey(key2)) {
                 Object value1 = item.get(key1);
