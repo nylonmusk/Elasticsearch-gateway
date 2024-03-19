@@ -11,26 +11,49 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public class DatabaseManager implements AutoCloseable {
-    private Connection connection;
+public class DatabaseManager {
+
     private static final URLClassLoader CLASS_LOADER = (URLClassLoader) ClassLoader.getSystemClassLoader();
     private static final List<URL> LOADED_URL_LIST = new ArrayList<>();
     private static final List<String> LOADED_CLASS_LIST = new ArrayList<>();
 
     public List<Map<String, Object>> execute(Map<String, Object> databaseData, Map<String, Object> fetchData) {
-        connect(databaseData);
-        List<Map<String, Object>> selectedData = select(fetchData);
-        disconnect();
+        List<Map<String, Object>> selectedData = select(databaseData, fetchData);
         return selectedData;
     }
 
-    private void connect(Map<String, Object> databaseData) {
+    private List<Map<String, Object>> select(Map<String, Object> databaseData, Map<String, Object> fetchData) {
+        loadDriver(databaseData);
+
+        String url = databaseData.get(Database.URL.get()).toString();
+        String user = databaseData.get(Database.USER_NAME.get()).toString();
+        String password = databaseData.get(Database.PASSWORD.get()).toString();
+
+        try (Connection connection = DriverManager.getConnection(url, user, password)) {
+            Log.info(DatabaseManager.class.getName(), "Database connected successfully.");
+
+            QueryRunner runner = new QueryRunner();
+            Map<String, Object> fetchSettingData = (Map<String, Object>) fetchData.get(Database.SETTING.get());
+            if (fetchSettingData != null) {
+                String query = fetchSettingData.get(Database.QUERY.get()).toString();
+                if (query != null && !query.isEmpty()) {
+                    Log.info(DatabaseManager.class.getName(), "Query set successfully.");
+                    List<Map<String, Object>> data = runner.query(connection, query, new MapListHandler());
+                    return Collections.unmodifiableList(data);
+                }
+            }
+        } catch (Exception e) {
+            Log.error(DatabaseManager.class.getName(), "Database operation failed.");
+        }
+        return Collections.emptyList();
+    }
+
+    private void loadDriver(Map<String, Object> databaseData) {
         try {
             String libPath = databaseData.get(Database.LIB_PATH.get()).toString();
             String lib = databaseData.get(Database.LIB.get()).toString();
@@ -49,56 +72,8 @@ public class DatabaseManager implements AutoCloseable {
                 Class.forName(driver);
                 LOADED_CLASS_LIST.add(driver);
             }
-
-            String url = databaseData.get(Database.URL.get()).toString();
-            String user = databaseData.get(Database.USER_NAME.get()).toString();
-            String password = databaseData.get(Database.PASSWORD.get()).toString();
-
-            connection = DriverManager.getConnection(url, user, password);
-            Log.info(DatabaseManager.class.getName(), "Database connected successfully.");
-
         } catch (Exception e) {
-            Log.error(DatabaseManager.class.getName(), "Database connect failed.");
+            Log.error(DatabaseManager.class.getName(), "Driver load failed.");
         }
-    }
-
-    private void disconnect() {
-        try {
-            if (connection != null && !connection.isClosed()) {
-                connection.close();
-                Log.info(DatabaseManager.class.getName(), "Database disconnected successfully.");
-            }
-        } catch (SQLException e) {
-            Log.info(DatabaseManager.class.getName(), "Database disconnect failed.");
-        }
-    }
-
-    @Override
-    public void close() {
-        disconnect();
-    }
-
-    private List<Map<String, Object>> select(Map<String, Object> fetchData) {
-        if (connection == null) {
-            Log.warn(DatabaseManager.class.getName(), "No Connection");
-            return Collections.emptyList();
-        }
-
-        QueryRunner runner = new QueryRunner();
-        Map<String, Object> fetchSettingData = (Map<String, Object>) fetchData.get(Database.SETTING.get());
-        if (fetchSettingData != null) {
-            String query = fetchSettingData.get(Database.QUERY.get()).toString();
-            if (query != null && !query.isEmpty()) {
-                Log.info(DatabaseManager.class.getName(), "Query set successfully.");
-                try {
-                    List<Map<String, Object>> data = runner.query(connection, query, new MapListHandler());
-                    return Collections.unmodifiableList(data);
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        return Collections.emptyList();
     }
 }
