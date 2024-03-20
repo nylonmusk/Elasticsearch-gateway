@@ -21,13 +21,10 @@ public class Dump {
     }
 
     public void makeJson(List<Map<String, Object>> data) {
-        try {
+        try (FileWriter fileWriter = new FileWriter("C:\\Users\\mayfarm\\Documents\\article.json")) {
             String jsonData = objectMapper.writeValueAsString(data);
-
-            try (FileWriter fileWriter = new FileWriter("C:\\Users\\mayfarm\\Documents\\article.json")) {
-                fileWriter.write(jsonData);
-                fileWriter.flush();
-            }
+            fileWriter.write(jsonData);
+            fileWriter.flush();
             Log.info(Dump.class.getName(), "created JSON file successfully.");
         } catch (Exception e) {
             e.printStackTrace();

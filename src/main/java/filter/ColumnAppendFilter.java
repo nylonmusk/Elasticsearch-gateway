@@ -30,8 +30,8 @@ public class ColumnAppendFilter implements FilterInterface {
     public void filter(List<Map<String, Object>> data, Map<String, Object> config) throws IOException {
         for (Map<String, Object> item : data) {
             if (item.containsKey(key1) && item.containsKey(key2)) {
-                Object value1 = item.get(key1);
-                Object value2 = item.get(key2);
+                String value1 = item.get(key1).toString();
+                String value2 = item.get(key2).toString();
 
                 StringBuilder appendedValue = new StringBuilder();
                 appendedValue.append(value1).append(attacher).append(value2);

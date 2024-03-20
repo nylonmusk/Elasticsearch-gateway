@@ -19,14 +19,18 @@ public class HtmlTagFilter implements FilterInterface {
         for (Map<String, Object> item : data) {
             for (Map.Entry<String, Object> entry : item.entrySet()) {
                 String value = entry.getValue().toString();
-                String filteredValue = value.replaceAll(HtmlTagRegex.HTML_TAG.get(), "")
-                        .replaceAll(HtmlTagRegex.HTML_ENTITY.get(), "")
-                        .replaceAll(HtmlTagRegex.WHITE_SPACE.get(), "")
-                        .replaceAll(HtmlTagRegex.BACKSLASH.get(), "");
+                String filteredValue = replaceHtmlTag(value);
                 entry.setValue(filteredValue);
             }
         }
         Log.info(HtmlTagFilter.class.getName(), "HtmlTag removed successfully.");
+    }
+
+    private String replaceHtmlTag(String value) {
+        return value.replaceAll(HtmlTagRegex.HTML_TAG.get(), "")
+                .replaceAll(HtmlTagRegex.HTML_ENTITY.get(), "")
+                .replaceAll(HtmlTagRegex.WHITE_SPACE.get(), "")
+                .replaceAll(HtmlTagRegex.BACKSLASH.get(), "");
     }
 }
 
