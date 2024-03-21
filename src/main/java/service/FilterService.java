@@ -10,7 +10,7 @@ import view.Log;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -22,16 +22,22 @@ public class FilterService {
         this.filterFactory = filterFactory;
     }
 
-    public List<Map<String, Object>> filter(List<Map<String, Object>> selectedData, Map<String, Object> filterConfig) throws IOException, ParseException {
-        List<FilterInterface> filters = filterFactory.createFilters(filterConfig.keySet(), filterConfig);
+    public List<Map<String, Object>> filter(List<Map<String, Object>> selectedData, Map<String, Object> filterConfig) throws ParseException {
+        try {
+            List<FilterInterface> filters = filterFactory.createFilters(filterConfig.keySet(), filterConfig);
 
-        for (FilterInterface filter : filters) {
-            Map<String, Object> specificFilterConfig = getSpecificFilterConfig(filterConfig, filter);
-            filter.filter(selectedData, specificFilterConfig);
+            for (FilterInterface filter : filters) {
+                Map<String, Object> specificFilterConfig = getSpecificFilterConfig(filterConfig, filter);
+                filter.filter(selectedData, specificFilterConfig);
+            }
+            Log.info(FilterService.class.getName(), "filtered successfully.");
+            return selectedData;
+        } catch (IOException e) {
+            Log.error(FilterService.class.getName(), "Error occurred during filtering: " + e.getMessage());
         }
-        Log.info(FilterService.class.getName(), "filtered successfully.");
-        return selectedData;
+        return Collections.EMPTY_LIST;
     }
+
 
     private Map<String, Object> getSpecificFilterConfig(Map<String, Object> filterConfig, FilterInterface filter) {
         Filter keyword = getFilterKeyword(filter);
@@ -41,7 +47,7 @@ public class FilterService {
                 return parseSpecificFilterConfig(configValue);
             }
         }
-        return new HashMap<>();
+        return Collections.EMPTY_MAP;
     }
 
     private Filter getFilterKeyword(FilterInterface filter) {
@@ -65,8 +71,8 @@ public class FilterService {
             return objectMapper.readValue(specificConfigJson, new TypeReference<Map<String, Object>>() {
             });
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.error(FilterService.class.getName(), "parse specificFilterConfig failed.");
         }
-        return new HashMap<>();
+        return Collections.EMPTY_MAP;
     }
 }

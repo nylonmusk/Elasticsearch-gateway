@@ -3,41 +3,54 @@ package service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import constant.Keyword;
+import validation.ConfigValidator;
 import view.Log;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Map;
 
 public class ConfigService {
-    private final String filePath;
     private final Map<String, Map<String, Object>> configData;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public ConfigService(String filePath) throws IOException {
-        this.filePath = filePath;
+    public ConfigService(String filePath) {
         this.configData = loadJsonFromFile(filePath);
     }
 
-    private Map<String, Map<String, Object>> loadJsonFromFile(String filePath) throws IOException {
-        Map<String, Map<String, Object>> result;
-        result = objectMapper.readValue(new File(filePath), new TypeReference<Map<String, Map<String, Object>>>() {
-        });
-        Log.info(ConfigService.class.getName(), "read Config File.");
-
-        return result;
+    private Map<String, Map<String, Object>> loadJsonFromFile(String filePath) {
+        try {
+            Map<String, Map<String, Object>> data = objectMapper.readValue(new File(filePath), new TypeReference<Map<String, Map<String, Object>>>() {
+            });
+            Log.info(ConfigService.class.getName(), "Read Config File successful");
+            return data;
+        } catch (IOException e) {
+            Log.error(ConfigService.class.getName(), "Failed to read config file: " + e.getMessage());
+        }
+        return Collections.emptyMap();
     }
 
     public Map<String, Object> getFilterConfig() {
-        return configData.get(Keyword.FILTER.get());
+        if (ConfigValidator.isValid(configData, Keyword.FILTER.get())) {
+            return configData.get(Keyword.FILTER.get());
+        }
+        return Collections.EMPTY_MAP;
     }
 
     public Map<String, Object> getFetchConfig() {
-        return configData.get(Keyword.FETCH.get());
+        if (ConfigValidator.isValid(configData, Keyword.FETCH.get())) {
+            return configData.get(Keyword.FETCH.get());
+        }
+        return Collections.EMPTY_MAP;
     }
 
     public Map<String, Object> getDatabaseConfig() {
-        return configData.get(Keyword.DATABASE.get());
+        if (ConfigValidator.isValid(configData, Keyword.DATABASE.get())) {
+            return configData.get(Keyword.DATABASE
+                    .get());
+        }
+        return Collections.EMPTY_MAP;
     }
 }
 
