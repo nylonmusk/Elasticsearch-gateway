@@ -15,7 +15,7 @@ public class TrimFilter implements FilterInterface {
     }
 
     @Override
-    public void filter(List<Map<String, Object>> data, Map<String, Object> config) {
+    public void filter(List<Map<String, Object>> data) {
         for (Map<String, Object> item : data) {
             Iterator<Map.Entry<String, Object>> iterator = item.entrySet().iterator();
             while (iterator.hasNext()) {

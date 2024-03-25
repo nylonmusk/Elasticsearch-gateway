@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface FilterInterface {
-    void filter(List<Map<String, Object>> data, Map<String, Object> config) throws IOException, ParseException;
+    void filter(List<Map<String, Object>> data) throws IOException, ParseException;
 
     FilterOrder getFilterOrder();
 }

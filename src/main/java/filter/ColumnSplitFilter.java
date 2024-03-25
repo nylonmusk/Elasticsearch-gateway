@@ -27,7 +27,7 @@ public class ColumnSplitFilter implements FilterInterface {
     }
 
     @Override
-    public void filter(List<Map<String, Object>> data, Map<String, Object> config) {
+    public void filter(List<Map<String, Object>> data) {
         for (Map<String, Object> item : data) {
             if (item.containsKey(target)) {
                 StringTokenizer st = new StringTokenizer(item.get(target).toString(), separator);

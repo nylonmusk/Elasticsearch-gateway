@@ -27,7 +27,7 @@ public class ColumnAppendFilter implements FilterInterface {
     }
 
     @Override
-    public void filter(List<Map<String, Object>> data, Map<String, Object> config) throws IOException {
+    public void filter(List<Map<String, Object>> data) throws IOException {
         for (Map<String, Object> item : data) {
             if (item.containsKey(key1) && item.containsKey(key2)) {
                 String value1 = item.get(key1).toString();
