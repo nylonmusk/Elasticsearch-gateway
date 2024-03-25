@@ -6,6 +6,7 @@
     </envs>
     <option name="MAIN_CLASS_NAME" value="Main" />
     <module name="Elasticsearch-gateway" />
+    <option name="PROGRAM_PARAMETERS" value="C:\\Users\\mayfarm\\Documents\\config.json" />
     <method v="2">
       <option name="Make" enabled="true" />
     </method>
