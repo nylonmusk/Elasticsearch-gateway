@@ -52,5 +52,12 @@ public class ConfigService {
         }
         return Collections.EMPTY_MAP;
     }
+
+    public Map<String, Object> getDumpConfig() {
+        if (ConfigValidator.isValid(configData, Keyword.DUMP.get())) {
+            return configData.get(Keyword.DUMP.get());
+        }
+        return Collections.EMPTY_MAP;
+    }
 }
 
