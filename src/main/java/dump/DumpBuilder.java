@@ -3,13 +3,14 @@ package dump;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import constant.Dump;
 import view.Log;
 
 import java.io.FileWriter;
 import java.util.List;
 import java.util.Map;
 
-public class Dump {
+public class DumpBuilder {
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
     static {
@@ -20,12 +21,14 @@ public class Dump {
         objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
     }
 
-    public void makeJson(List<Map<String, Object>> data) {
-        try (FileWriter fileWriter = new FileWriter("C:\\Users\\mayfarm\\Documents\\article.json")) {
+    public void makeJson(List<Map<String, Object>> data, Map<String, Object> dumpConfig) {
+        final String dumpFilePath = dumpConfig.get(Dump.FILE_PATH.get()).toString();
+
+        try (FileWriter fileWriter = new FileWriter(dumpFilePath)) {
             String jsonData = objectMapper.writeValueAsString(data);
             fileWriter.write(jsonData);
             fileWriter.flush();
-            Log.info(Dump.class.getName(), "created JSON file successfully.");
+            Log.info(DumpBuilder.class.getName(), "created JSON file successfully.");
         } catch (Exception e) {
             e.printStackTrace();
         }
