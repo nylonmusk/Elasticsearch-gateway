@@ -24,7 +24,7 @@ public class DatabaseManager {
 
     public List<Map<String, Object>> execute(Map<String, Object> databaseData, Map<String, Object> fetchData) {
         List<Map<String, Object>> selectedData = select(databaseData, fetchData);
-        return selectedData;
+        return Collections.unmodifiableList(selectedData);
     }
 
     private List<Map<String, Object>> select(Map<String, Object> databaseData, Map<String, Object> fetchData) {
