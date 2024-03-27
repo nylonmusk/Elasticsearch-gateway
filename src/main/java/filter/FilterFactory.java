@@ -1,5 +1,6 @@
 package filter;
 
+import constant.Column;
 import constant.Filter;
 
 import java.util.ArrayList;
@@ -13,17 +14,17 @@ public class FilterFactory {
         List<FilterInterface> filters = new ArrayList<>();
 
         for (String keyword : filterKeywords) {
-            if (Filter.COLUMN_APPEND.get().equals(keyword)) {
+            if (Filter.COLUMN_APPEND.equals(keyword)) {
                 addColumnAppendFilter(filters, filterConfig);
-            } else if (Filter.COLUMN_SPLIT.get().equals(keyword)) {
+            } else if (Filter.COLUMN_SPLIT.equals(keyword)) {
                 addColumnSplitFilter(filters, filterConfig);
-            } else if (Filter.TRIM.get().equals(keyword)) {
+            } else if (Filter.TRIM.equals(keyword)) {
                 filters.add(new TrimFilter());
-            } else if (Filter.CONVERT_CASE.get().equals(keyword)) {
+            } else if (Filter.CONVERT_CASE.equals(keyword)) {
                 filters.add(new ConvertCaseFilter());
-            } else if (Filter.DATE_FORMAT.get().equals(keyword)) {
+            } else if (Filter.DATE_FORMAT.equals(keyword)) {
                 addDateFormatFilter(filters, filterConfig);
-            } else if (Filter.HTML_TAG.get().equals(keyword)) {
+            } else if (Filter.HTML_TAG.equals(keyword)) {
                 filters.add(new HtmlTagFilter());
             }
         }
@@ -35,7 +36,7 @@ public class FilterFactory {
 
     private void addColumnAppendFilter(List<FilterInterface> filters, Map<String, Object> filterConfig) {
         Map<String, Object> optionMap = (Map<String, Object>) filterConfig.get(Filter.COLUMN_APPEND.get());
-        List<String> option = (List<String>) optionMap.get("option");
+        List<String> option = (List<String>) optionMap.get(Column.OPTION.get());
         String key1 = option.get(0);
         String key2 = option.get(1);
         String targetKey = option.get(2);
@@ -45,7 +46,7 @@ public class FilterFactory {
 
     private void addColumnSplitFilter(List<FilterInterface> filters, Map<String, Object> filterConfig) {
         Map<String, Object> optionMap = (Map<String, Object>) filterConfig.get(Filter.COLUMN_SPLIT.get());
-        List<String> option = (List<String>) optionMap.get("option");
+        List<String> option = (List<String>) optionMap.get(Column.OPTION.get());
         String target = option.get(0);
         String key1 = option.get(1);
         String key2 = option.get(2);

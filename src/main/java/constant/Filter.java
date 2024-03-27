@@ -18,4 +18,8 @@ public enum Filter {
         return keyword;
     }
 
+    public boolean equals(String keyword) {
+        return this.keyword.equals(keyword);
+    }
+
 }
