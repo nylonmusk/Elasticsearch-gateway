@@ -1,14 +1,15 @@
 package constant;
 
-public enum HtmlTagRegex {
+public enum HtmlTag {
     HTML_TAG("<.*?>"),
     HTML_ENTITY("&.*?;"),
     WHITE_SPACE("\n"),
-    BACKSLASH("\\\\");
+    BACKSLASH("\\\\"),
+    BLANK("");
 
     private final String regex;
 
-    HtmlTagRegex(String regex) {
+    HtmlTag(String regex) {
         this.regex = regex;
     }
 

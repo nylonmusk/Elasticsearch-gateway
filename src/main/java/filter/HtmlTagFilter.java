@@ -1,7 +1,7 @@
 package filter;
 
 import constant.FilterOrder;
-import constant.HtmlTagRegex;
+import constant.HtmlTag;
 import view.Log;
 
 import java.util.List;
@@ -27,10 +27,10 @@ public class HtmlTagFilter implements FilterInterface {
     }
 
     private String replaceHtmlTag(String value) {
-        return value.replaceAll(HtmlTagRegex.HTML_TAG.get(), "")
-                .replaceAll(HtmlTagRegex.HTML_ENTITY.get(), "")
-                .replaceAll(HtmlTagRegex.WHITE_SPACE.get(), "")
-                .replaceAll(HtmlTagRegex.BACKSLASH.get(), "");
+        return value.replaceAll(HtmlTag.HTML_TAG.get(), HtmlTag.BLANK.get())
+                .replaceAll(HtmlTag.HTML_ENTITY.get(), HtmlTag.BLANK.get())
+                .replaceAll(HtmlTag.WHITE_SPACE.get(), HtmlTag.BLANK.get())
+                .replaceAll(HtmlTag.BACKSLASH.get(), HtmlTag.BLANK.get());
     }
 }
 
