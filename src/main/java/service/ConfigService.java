@@ -47,8 +47,7 @@ public class ConfigService {
 
     public Map<String, Object> getDatabaseConfig() {
         if (ConfigValidator.isValid(configData, Keyword.DATABASE.get())) {
-            return configData.get(Keyword.DATABASE
-                    .get());
+            return configData.get(Keyword.DATABASE.get());
         }
         return Collections.EMPTY_MAP;
     }

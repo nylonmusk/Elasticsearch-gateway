@@ -1,6 +1,7 @@
 package filter;
 
 import constant.Column;
+import constant.DateFormat;
 import constant.Filter;
 
 import java.util.ArrayList;
@@ -14,24 +15,40 @@ public class FilterFactory {
         List<FilterInterface> filters = new ArrayList<>();
 
         for (String keyword : filterKeywords) {
-            if (Filter.COLUMN_APPEND.equals(keyword)) {
-                addColumnAppendFilter(filters, filterConfig);
-            } else if (Filter.COLUMN_SPLIT.equals(keyword)) {
-                addColumnSplitFilter(filters, filterConfig);
-            } else if (Filter.TRIM.equals(keyword)) {
-                filters.add(new TrimFilter());
-            } else if (Filter.CONVERT_CASE.equals(keyword)) {
-                filters.add(new ConvertCaseFilter());
-            } else if (Filter.DATE_FORMAT.equals(keyword)) {
-                addDateFormatFilter(filters, filterConfig);
-            } else if (Filter.HTML_TAG.equals(keyword)) {
-                filters.add(new HtmlTagFilter());
-            }
+            addFilters(filterConfig, keyword, filters);
         }
 
         filters.sort(Comparator.comparingInt(filter -> filter.getFilterOrder().getOrder()));
 
         return filters;
+    }
+
+    private void addFilters(Map<String, Object> filterConfig, String keyword, List<FilterInterface> filters) {
+        if (Filter.COLUMN_APPEND.equals(keyword)) {
+            addColumnAppendFilter(filters, filterConfig);
+            return;
+        }
+
+        if (Filter.COLUMN_SPLIT.equals(keyword)) {
+            addColumnSplitFilter(filters, filterConfig);
+            return;
+        }
+
+        if (Filter.TRIM.equals(keyword)) {
+            filters.add(new TrimFilter());
+            return;
+        }
+        if (Filter.CONVERT_CASE.equals(keyword)) {
+            filters.add(new ConvertCaseFilter());
+            return;
+        }
+        if (Filter.DATE_FORMAT.equals(keyword)) {
+            addDateFormatFilter(filters, filterConfig);
+            return;
+        }
+        if (Filter.HTML_TAG.equals(keyword)) {
+            filters.add(new HtmlTagFilter());
+        }
     }
 
     private void addColumnAppendFilter(List<FilterInterface> filters, Map<String, Object> filterConfig) {
@@ -56,7 +73,7 @@ public class FilterFactory {
 
     private void addDateFormatFilter(List<FilterInterface> filters, Map<String, Object> filterConfig) {
         Map<String, Object> columnMap = (Map<String, Object>) filterConfig.get(Filter.DATE_FORMAT.get());
-        List<String> column = (List<String>) columnMap.get("column");
+        List<String> column = (List<String>) columnMap.get(DateFormat.COLUMN.get());
         String column1 = column.get(0);
         String column2 = column.get(1);
         filters.add(new DateFormatFilter(column1, column2));

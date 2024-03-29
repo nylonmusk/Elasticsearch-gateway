@@ -1,6 +1,7 @@
 package constant;
 
 public enum DateFormat {
+    COLUMN("column"),
     INPUT_FORMAT("yyyyMMddHHmmss"),
     OUTPUT_FORMAT("yyyy-MM-dd HH:mm:ss");
 
