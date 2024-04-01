@@ -14,28 +14,24 @@ public class ColumnSplitFilter implements FilterInterface {
         return FilterOrder.COLUMN_SPLIT;
     }
 
-    private final String target;
-    private final String key1;
-    private final String key2;
+    private final String column;
+    private final List<String> outputColumns;
     private final String separator;
 
-    public ColumnSplitFilter(String target, String key1, String key2, String separator) {
-        this.target = target;
-        this.key1 = key1;
-        this.key2 = key2;
+    public ColumnSplitFilter(String column, List<String> outputColumns, String separator) {
+        this.column = column;
+        this.outputColumns = outputColumns;
         this.separator = separator;
     }
 
     @Override
     public void filter(List<Map<String, Object>> data) {
         for (Map<String, Object> item : data) {
-            if (item.containsKey(target)) {
-                StringTokenizer st = new StringTokenizer(item.get(target).toString(), separator);
-                String value1 = st.nextToken();
-                String value2 = st.nextToken();
-
-                item.put(key1, value1);
-                item.put(key2, value2);
+            if (item.containsKey(column)) {
+                String[] values = item.get(column).toString().split(separator);
+                for (int i = 0; i < outputColumns.size(); i++) {
+                    item.put(outputColumns.get(i), values[i]);
+                }
             }
         }
         Log.info(ColumnSplitFilter.class.getName(), "Column split successfully.");

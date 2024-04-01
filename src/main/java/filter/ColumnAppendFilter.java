@@ -14,28 +14,28 @@ public class ColumnAppendFilter implements FilterInterface {
         return FilterOrder.COLUMN_APPEND;
     }
 
-    private final String key1;
-    private final String key2;
-    private final String targetKey;
+    private final List<String> columns;
+    private final String outputColumn;
     private final String attacher;
 
-    public ColumnAppendFilter(String key1, String key2, String targetKey, String attacher) {
-        this.key1 = key1;
-        this.key2 = key2;
-        this.targetKey = targetKey;
+    public ColumnAppendFilter(List<String> columns, String outputColumn, String attacher) {
+        this.columns = columns;
+        this.outputColumn = outputColumn;
         this.attacher = attacher;
     }
 
     @Override
     public void filter(List<Map<String, Object>> data) throws IOException {
         for (Map<String, Object> item : data) {
-            if (item.containsKey(key1) && item.containsKey(key2)) {
-                String value1 = item.get(key1).toString();
-                String value2 = item.get(key2).toString();
-
-                StringBuilder appendedValue = new StringBuilder();
-                appendedValue.append(value1).append(attacher).append(value2);
-                item.put(targetKey, appendedValue);
+            StringBuilder outputValue = new StringBuilder();
+            for (String column : columns) {
+                if (item.containsKey(column)) {
+                    outputValue.append(item.get(column).toString()).append(attacher);
+                }
+            }
+            if (outputValue.length() != 0) {
+                String value = outputValue.toString().substring(0, outputValue.length() - attacher.length());
+                item.put(outputColumn, value);
             }
         }
         Log.info(ColumnAppendFilter.class.getName(), "Column appended successfully.");

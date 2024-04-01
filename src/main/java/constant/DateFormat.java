@@ -1,8 +1,9 @@
 package constant;
 
 public enum DateFormat {
-    COLUMN("column"),
+    COLUMNS("columns"),
     INPUT_FORMAT("yyyyMMddHHmmss"),
+    FORMAT_TYPE("formatType"),
     OUTPUT_FORMAT("yyyy-MM-dd HH:mm:ss");
 
     private final String date;

@@ -5,7 +5,8 @@ public enum HtmlTag {
     HTML_ENTITY("&.*?;"),
     WHITE_SPACE("\n"),
     BACKSLASH("\\\\"),
-    BLANK("");
+    BLANK(""),
+    COLUMNS("columns");
 
     private final String regex;
 

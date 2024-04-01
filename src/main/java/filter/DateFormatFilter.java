@@ -19,13 +19,12 @@ public class DateFormatFilter implements FilterInterface {
     }
 
     private final SimpleDateFormat inputFormat = new SimpleDateFormat(DateFormat.INPUT_FORMAT.get());
-    private final SimpleDateFormat outputFormat = new SimpleDateFormat(DateFormat.OUTPUT_FORMAT.get());
-    private final String column1;
-    private final String column2;
+    private final SimpleDateFormat outputFormat;
+    private final List<String> columns;
 
-    public DateFormatFilter(String column1, String column2) {
-        this.column1 = column1;
-        this.column2 = column2;
+    public DateFormatFilter(List<String> columns, String formatType) {
+        this.columns = columns;
+        this.outputFormat = new SimpleDateFormat(formatType);
         inputFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
         outputFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
     }
@@ -34,8 +33,9 @@ public class DateFormatFilter implements FilterInterface {
     public void filter(List<Map<String, Object>> data) {
         try {
             for (Map<String, Object> item : data) {
-                format(item, column1);
-                format(item, column2);
+                for (String column : columns) {
+                    format(item, column);
+                }
             }
             Log.info(DateFormatFilter.class.getName(), "Date Formatted successfully.");
         } catch (ParseException e) {

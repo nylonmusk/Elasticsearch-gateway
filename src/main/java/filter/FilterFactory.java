@@ -28,18 +28,16 @@ public class FilterFactory {
             addColumnAppendFilter(filters, filterConfig);
             return;
         }
-
         if (Filter.COLUMN_SPLIT.equals(keyword)) {
             addColumnSplitFilter(filters, filterConfig);
             return;
         }
-
         if (Filter.TRIM.equals(keyword)) {
-            filters.add(new TrimFilter());
+            filters.add(new TrimFilter(getTrimFilterConfig(filterConfig)));
             return;
         }
         if (Filter.CONVERT_CASE.equals(keyword)) {
-            filters.add(new ConvertCaseFilter());
+            filters.add(new ConvertCaseFilter(getConvertCaseFilterConfig(filterConfig)));
             return;
         }
         if (Filter.DATE_FORMAT.equals(keyword)) {
@@ -47,35 +45,45 @@ public class FilterFactory {
             return;
         }
         if (Filter.HTML_TAG.equals(keyword)) {
-            filters.add(new HtmlTagFilter());
+            filters.add(new HtmlTagFilter(getHtmlTagFilterConfig(filterConfig)));
         }
+    }
+
+    private Map<String, Object> getHtmlTagFilterConfig(Map<String, Object> filterConfig) {
+        Map<String, Object> optionMap = (Map<String, Object>) filterConfig.get(Filter.HTML_TAG.get());
+        return optionMap;
+    }
+
+    private Map<String, Object> getTrimFilterConfig(Map<String, Object> filterConfig) {
+        Map<String, Object> optionMap = (Map<String, Object>) filterConfig.get(Filter.TRIM.get());
+        return optionMap;
+    }
+
+    private Map<String, Object> getConvertCaseFilterConfig(Map<String, Object> filterConfig) {
+        Map<String, Object> optionMap = (Map<String, Object>) filterConfig.get(Filter.CONVERT_CASE.get());
+        return optionMap;
     }
 
     private void addColumnAppendFilter(List<FilterInterface> filters, Map<String, Object> filterConfig) {
         Map<String, Object> optionMap = (Map<String, Object>) filterConfig.get(Filter.COLUMN_APPEND.get());
-        List<String> option = (List<String>) optionMap.get(Column.OPTION.get());
-        String key1 = option.get(0);
-        String key2 = option.get(1);
-        String targetKey = option.get(2);
-        String attacher = option.get(3);
-        filters.add(new ColumnAppendFilter(key1, key2, targetKey, attacher));
+        List<String> columns = (List<String>) optionMap.get(Column.COLUMNS.get());
+        String outputColumn = (String) optionMap.get(Column.OUTPUT_COLUMN.get());
+        String attacher = (String) optionMap.get(Column.ATTACHER.get());
+        filters.add(new ColumnAppendFilter(columns, outputColumn, attacher));
     }
 
     private void addColumnSplitFilter(List<FilterInterface> filters, Map<String, Object> filterConfig) {
         Map<String, Object> optionMap = (Map<String, Object>) filterConfig.get(Filter.COLUMN_SPLIT.get());
-        List<String> option = (List<String>) optionMap.get(Column.OPTION.get());
-        String target = option.get(0);
-        String key1 = option.get(1);
-        String key2 = option.get(2);
-        String separator = option.get(3);
-        filters.add(new ColumnSplitFilter(target, key1, key2, separator));
+        String column = (String) optionMap.get(Column.COLUMN.get());
+        List<String> outputColumns = (List<String>) optionMap.get(Column.OUTPUT_COLUMNS.get());
+        String separator = (String) optionMap.get(Column.SEPARATOR.get());
+        filters.add(new ColumnSplitFilter(column, outputColumns, separator));
     }
 
     private void addDateFormatFilter(List<FilterInterface> filters, Map<String, Object> filterConfig) {
         Map<String, Object> columnMap = (Map<String, Object>) filterConfig.get(Filter.DATE_FORMAT.get());
-        List<String> column = (List<String>) columnMap.get(DateFormat.COLUMN.get());
-        String column1 = column.get(0);
-        String column2 = column.get(1);
-        filters.add(new DateFormatFilter(column1, column2));
+        List<String> columns = (List<String>) columnMap.get(DateFormat.COLUMNS.get());
+        String formatType = (String) columnMap.get(DateFormat.FORMAT_TYPE.get());
+        filters.add(new DateFormatFilter(columns, formatType));
     }
 }
